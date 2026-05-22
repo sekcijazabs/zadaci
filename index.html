@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Tahografski zadaci — CPC Obuka</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0d1117;
+  --navy:#0f2744;
+  --blue:#1a4b8c;
+  --blue2:#1565c0;
+  --red:#c62828;
+  --green:#1b5e20;
+  --amber:#e65100;
+  --bg:#f4f6f9;
+  --card:#ffffff;
+  --border:#d0d7e3;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'IBM Plex Sans',sans-serif;
+  --r:12px;
+}
+body{font-family:var(--sans);background:var(--bg);min-height:100vh;padding:10px}
+#app{width:100%;max-width:560px;margin:0 auto}
+.screen{display:none}.screen.active{display:block}
+
+/* ===== LOGIN ===== */
+.login-wrap{min-height:96vh;display:flex;align-items:center;justify-content:center}
+.login-card{background:var(--card);border-radius:18px;border:2px solid var(--border);padding:40px 28px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(15,39,68,.10)}
+.login-icon{width:64px;height:64px;background:var(--navy);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:28px}
+.login-org{font-size:11px;font-weight:700;letter-spacing:3px;color:var(--blue);text-transform:uppercase;margin-bottom:6px;font-family:var(--mono)}
+.login-title{font-size:22px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.login-sub{font-size:13px;color:#6b7280;margin-bottom:32px;line-height:1.6}
+.login-label{display:block;font-size:11px;font-weight:700;color:#374151;text-align:left;margin-bottom:8px;letter-spacing:1px;text-transform:uppercase}
+.login-input{width:100%;padding:14px 18px;border:2px solid var(--border);border-radius:10px;font-size:20px;letter-spacing:6px;text-align:center;outline:none;transition:all .15s;font-family:var(--mono);color:var(--ink);background:#fafbfc}
+.login-input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(26,75,140,.10);background:#fff}
+.login-btn{width:100%;padding:15px;background:var(--navy);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;letter-spacing:.5px;transition:background .15s;font-family:var(--sans)}
+.login-btn:hover{background:var(--blue2)}
+.login-err{background:#fef2f2;border:1.5px solid #fca5a5;border-radius:8px;padding:10px 14px;font-size:13px;color:#b91c1c;margin-top:12px;display:none}
+.login-err.show{display:block}
+.locked-card{background:#fff;border-radius:18px;border:2px solid #fca5a5;padding:52px 28px;width:100%;text-align:center}
+.locked-icon{font-size:56px;margin-bottom:14px}
+.locked-title{font-size:20px;font-weight:700;color:var(--red);margin-bottom:8px}
+.locked-sub{font-size:13px;color:#6b7280;line-height:1.6}
+
+/* ===== HOME ===== */
+.home-top{background:var(--navy);border-radius:var(--r) var(--r) 0 0;padding:24px 20px 20px;position:relative;overflow:hidden}
+.home-top::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:rgba(255,255,255,.05);border-radius:50%}
+.home-top h1{font-size:19px;font-weight:700;color:#fff;margin-bottom:4px}
+.home-top p{font-size:12px;color:rgba(255,255,255,.65);font-family:var(--mono)}
+.home-body{background:var(--card);border-radius:0 0 var(--r) var(--r);border:2px solid var(--border);border-top:none;padding:18px}
+.info-bar{background:#eff6ff;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:#1e40af;line-height:1.6;margin-bottom:16px}
+.menu-item{display:flex;align-items:center;gap:14px;background:var(--bg);border-radius:10px;padding:14px;margin-bottom:8px;cursor:pointer;border:2px solid transparent;transition:all .15s}
+.menu-item:hover{background:#eef2ff;border-color:#c7d2fe}
+.menu-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.menu-icon.blue{background:#dbeafe}
+.menu-icon.green{background:#dcfce7}
+.menu-icon.amber{background:#fff7ed}
+.menu-icon.purple{background:#f3e8ff}
+.menu-icon.slate{background:#f1f5f9}
+.menu-text h3{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.menu-text p{font-size:11px;color:#6b7280}
+.menu-badge{margin-left:auto;background:var(--navy);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;font-family:var(--mono);white-space:nowrap}
+.footer{text-align:center;font-size:11px;color:#9ca3af;margin-top:12px;padding-bottom:16px;font-family:var(--mono)}
+
+/* ===== SEKCIJA HEADER ===== */
+.sec-header{background:var(--navy);padding:14px 16px;border-radius:var(--r) var(--r) 0 0;display:flex;align-items:center;gap:10px}
+.back-btn{background:rgba(255,255,255,.12);border:none;color:#fff;width:32px;height:32px;border-radius:8px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sec-title{color:#fff;font-size:13px;font-weight:700;flex:1;font-family:var(--mono)}
+.sec-body{background:var(--card);border:2px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);padding:18px}
+
+/* ===== PITANJE a/b/c/d ===== */
+.q-num{font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-family:var(--mono)}
+.progress-bar{background:#e5e7eb;border-radius:4px;height:4px;margin-bottom:16px}
+.progress-fill{background:var(--blue);border-radius:4px;height:4px;transition:width .3s}
+.q-text{font-size:14px;font-weight:600;color:var(--ink);line-height:1.6;margin-bottom:16px}
+.opt{display:block;width:100%;text-align:left;background:var(--bg);border:2px solid var(--border);border-radius:9px;padding:12px 14px;font-size:13px;color:var(--ink);cursor:pointer;margin-bottom:8px;transition:all .12s;font-family:var(--sans);line-height:1.4}
+.opt:hover:not(:disabled){background:#eef2ff;border-color:#a5b4fc}
+.opt.correct{background:#f0fdf4;border-color:#22c55e;color:#166534}
+.opt.wrong{background:#fef2f2;border-color:#f87171;color:#991b1b}
+.opt.reveal{background:#f0fdf4;border-color:#22c55e;color:#166534}
+.exp-box{background:#fffbeb;border:1.5px solid #fcd34d;border-radius:9px;padding:12px 14px;font-size:12px;color:#78350f;line-height:1.6;margin-bottom:12px;display:none}
+.exp-box strong{color:#92400e}
+.next-btn{width:100%;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;display:none;font-family:var(--sans)}
+.next-btn.show{display:block}
+
+/* ===== SVG DIJAGRAM WRAPPER ===== */
+.diagram-wrap{border:2px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;background:#fff}
+.diagram-title{background:var(--navy);color:#fff;font-size:11px;font-weight:700;padding:8px 12px;letter-spacing:1px;text-transform:uppercase;font-family:var(--mono)}
+
+/* ===== DA/NE ===== */
+.dane-label{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px;padding:10px 12px;background:var(--bg);border-radius:8px}
+.dane-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.dane-btn{padding:14px;font-size:15px;font-weight:800;border:2px solid var(--border);border-radius:10px;cursor:pointer;background:var(--bg);transition:all .15s;font-family:var(--sans)}
+.dane-btn:hover:not(:disabled){transform:scale(1.02)}
+.dane-btn.da-ok{background:#f0fdf4;border-color:#22c55e;color:#166534}
+.dane-btn.ne-ok{background:#fef2f2;border-color:#f87171;color:#991b1b}
+.dane-btn.wrong-sel{background:#fef2f2;border-color:#f87171;opacity:.6}
+.exp-full{background:#fffbeb;border:1.5px solid #fcd34d;border-radius:9px;padding:13px;font-size:12px;color:#78350f;line-height:1.7;margin-bottom:12px;display:none}
+.exp-full ul{padding-left:16px;margin-top:6px}
+.exp-full li{margin-bottom:4px}
+
+/* ===== UNOS VREMENA ===== */
+.unos-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.unos-row{display:flex;align-items:center;gap:10px;background:var(--bg);padding:10px 12px;border-radius:8px}
+.unos-sym{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-family:var(--mono);font-weight:700;border:1.5px solid var(--border);background:#fff}
+.unos-lbl{font-size:12px;flex:1;line-height:1.4}
+.unos-lbl strong{display:block;font-size:13px;color:var(--ink)}
+.unos-input{width:72px;padding:8px;border:2px solid var(--border);border-radius:7px;font-size:14px;text-align:center;font-family:var(--mono);outline:none;color:var(--ink)}
+.unos-input:focus{border-color:var(--blue)}
+.unos-input.ok{border-color:#22c55e;background:#f0fdf4;color:#166534}
+.unos-input.err{border-color:#f87171;background:#fef2f2;color:#991b1b}
+.check-btn{width:100%;padding:13px;background:var(--amber);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;font-family:var(--sans)}
+.result-banner{border-radius:9px;padding:12px;font-size:13px;font-weight:700;text-align:center;margin-bottom:10px;display:none}
+.result-banner.ok{background:#f0fdf4;color:#166534;border:1.5px solid #22c55e}
+.result-banner.err{background:#fef2f2;color:#991b1b;border:1.5px solid #f87171}
+
+/* ===== SCORE ===== */
+.score-wrap{text-align:center;padding:24px 0}
+.score-emoji{font-size:52px;margin-bottom:12px}
+.score-pct{font-size:42px;font-weight:900;font-family:var(--mono)}
+.score-pct.pass{color:var(--green)}
+.score-pct.fail{color:var(--red)}
+.score-sub{font-size:13px;color:#6b7280;margin:8px 0 20px}
+.score-cat{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bg);font-size:13px}
+.score-cat:last-child{border-bottom:none}
+.score-val.g{color:var(--green);font-weight:700}
+.score-val.b{color:var(--red);font-weight:700}
+.score-val.m{color:var(--amber);font-weight:700}
+.restart-btn{width:100%;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;margin-top:16px;font-family:var(--sans)}
+.back-btn2{width:100%;padding:13px;background:var(--bg);border:2px solid var(--border);border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;font-family:var(--sans);color:var(--ink)}
+
+/* ===== LEGENDA ===== */
+.legenda{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink);font-family:var(--mono)}
+.leg-dot{width:14px;height:14px;border-radius:3px;flex-shrink:0}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ===== LOGIN ===== -->
+<div id="login-screen" class="screen active">
+  <div class="login-wrap" id="main-login">
+    <div class="login-card">
+      <div class="login-icon">📊</div>
+      <div class="login-org">CPC Obuka · Kategorija D</div>
+      <div class="login-title">Tahografski zadaci</div>
+      <div class="login-sub">Analiza radnog vremena i čitanje tahografa<br>Ispitni format — periodična obuka</div>
+      <label class="login-label">Lozinka</label>
+      <input class="login-input" id="pw-input" type="password" placeholder="• • • • • • • •" maxlength="12" autocomplete="off">
+      <button class="login-btn" onclick="tryLogin()">Uđi u zadatke →</button>
+      <div class="login-err" id="pw-err">❌ Pogrešna lozinka. Pokušajte ponovo.</div>
+    </div>
+  </div>
+  <div class="login-wrap" id="locked-wrap" style="display:none">
+    <div class="locked-card">
+      <div class="locked-icon">🔒</div>
+      <div class="locked-title">Pristup istekao</div>
+      <div class="locked-sub">Kontaktirajte organizatora za obnovu pristupa.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HOME ===== -->
+<div id="home-screen" class="screen">
+  <div class="home-top">
+    <h1>Tahografski zadaci</h1>
+    <p>CPC_OBUKA · KAT_D · ISPITNI_FORMAT</p>
+  </div>
+  <div class="home-body">
+    <div class="info-bar">Svi zadaci odgovaraju ispitnom obliku koji se koristi na zvaničnim testovima Agencije za bezbednost saobraćaja Srbije.</div>
+
+    <div class="menu-item" onclick="showSec('s1')">
+      <div class="menu-icon blue">📋</div>
+      <div class="menu-text"><h3>Teorija tahografa</h3><p>Simboli, kartice, obaveze, propisi</p></div>
+      <div class="menu-badge">12 pit.</div>
+    </div>
+    <div class="menu-item" onclick="showSec('s2')">
+      <div class="menu-icon green">⏱</div>
+      <div class="menu-text"><h3>Analiza radnog vremena</h3><p>Dijagrami — Da li vozač postupa po zakonu?</p></div>
+      <div class="menu-badge">4 zadatka</div>
+    </div>
+    <div class="menu-item" onclick="showSec('s3')">
+      <div class="menu-icon amber">🔵</div>
+      <div class="menu-text"><h3>Čitanje tahografskog listića</h3><p>Očitaj aktivnosti sa analognog listića</p></div>
+      <div class="menu-badge">3 zadatka</div>
+    </div>
+    <div class="menu-item" onclick="showSec('s4')">
+      <div class="menu-icon purple">🖨</div>
+      <div class="menu-text"><h3>Digitalni tahograf — ispisi</h3><p>Prepoznaj vrstu ispisa i objasni značenje</p></div>
+      <div class="menu-badge">4 ispisa</div>
+    </div>
+    <div class="menu-item" onclick="showSec('s5')">
+      <div class="menu-icon slate">🧮</div>
+      <div class="menu-text"><h3>Obračun radnog vremena</h3><p>Da li postoji prekršaj? — sa tablicom</p></div>
+      <div class="menu-badge">5 zadataka</div>
+    </div>
+  </div>
+  <div class="footer">CPC_OBUKA © 2026</div>
+</div>
+
+<!-- ===== S1: TEORIJA TAHOGRAFA ===== -->
+<div id="s1-screen" class="screen">
+  <div class="sec-header">
+    <button class="back-btn" onclick="show('home-screen')">←</button>
+    <div class="sec-title">📋 TEORIJA TAHOGRAFA</div>
+  </div>
+  <div class="sec-body" id="s1-body"></div>
+</div>
+
+<!-- ===== S2: ANALIZA RADNOG VREMENA ===== -->
+<div id="s2-screen" class="screen">
+  <div class="sec-header">
+    <button class="back-btn" onclick="show('home-screen')">←</button>
+    <div class="sec-title">⏱ ANALIZA RADNOG VREMENA</div>
+  </div>
+  <div class="sec-body" id="s2-body">
+    <!-- Zadatak 1 -->
+    <div class="q-num">Zadatak 1 od 4</div>
+    <div class="q-text">Vozač je tokom 24h koristio radno vreme prikazano u dijagramu ispod. Da li postupa u skladu sa Zakonom o radnom vremenu posade vozila?</div>
+    
+    <div class="diagram-wrap">
+      <div class="diagram-title">DIJAGRAM A — Period od 24 časa</div>
+      <svg viewBox="0 0 520 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;padding:10px">
+        <!-- Pozadina -->
+        <rect x="10" y="20" width="500" height="40" rx="4" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+        <!-- Odmor: 00:00-04:00 = 83px -->
+        <rect x="10" y="20" width="83" height="40" rx="4" fill="#94a3b8"/>
+        <text x="51" y="44" text-anchor="middle" font-size="9" fill="white" font-family="monospace" font-weight="bold">ODMOR</text>
+        <!-- Radno: 04:00-10:00 = 125px -->
+        <rect x="93" y="20" width="125" height="40" fill="#1a4b8c"/>
+        <text x="155" y="41" text-anchor="middle" font-size="9" fill="white" font-family="monospace" font-weight="bold">RADNO</text>
+        <text x="155" y="53" text-anchor="middle" font-size="8" fill="#93c5fd" font-family="monospace">6h</text>
+        <!-- Pauza: 10:00-10:30 = 10px -->
+        <rect x="218" y="20" width="10" height="40" fill="#22c55e"/>
+        <!-- Radno: 10:30-16:30 = 125px -->
+        <rect x="228" y="20" width="125" height="40" fill="#1a4b8c"/>
+        <text x="290" y="41" text-anchor="middle" font-size="9" fill="white" font-family="monospace" font-weight="bold">RADNO</text>
+        <text x="290" y="53" text-anchor="middle" font-size="8" fill="#93c5fd" font-family="monospace">6h</text>
+        <!-- Pauza: 16:30-17:00 = 10px -->
+        <rect x="353" y="20" width="10" height="40" fill="#22c55e"/>
+        <!-- Radno: 17:00-19:00 = 42px -->
+        <rect x="363" y="20" width="42" height="40" fill="#1a4b8c"/>
+        <text x="384" y="44" text-anchor="middle" font-size="9" fill="white" font-family="monospace">2h</text>
+        <!-- Odmor: 19:00-00:00 = 105px -->
+        <rect x="405" y="20" width="105" height="40" rx="0" fill="#94a3b8"/>
+        <rect x="499" y="20" width="11" height="40" rx="0 4 4 0" fill="#94a3b8"/>
+        <text x="455" y="44" text-anchor="middle" font-size="9" fill="white" font-family="monospace" font-weight="bold">ODMOR</text>
+        <!-- Vremenska osa -->
+        <text x="10" y="75" font-size="8" fill="#64748b" font-family="monospace">00:00</text>
+        <text x="93" y="75" font-size="8" fill="#64748b" font-family="monospace">04:00</text>
+        <text x="218" y="75" font-size="8" fill="#64748b" font-family="monospace">10:00</text>
+        <text x="353" y="75" font-size="8" fill="#64748b" font-family="monospace">16:30</text>
+        <text x="405" y="75" font-size="8" fill="#64748b" font-family="monospace">19:00</text>
+        <text x="496" y="75" font-size="8" fill="#64748b" font-family="monospace">24:00</text>
+        <!-- Linije -->
+        <line x1="93" y1="18" x2="93" y2="62" stroke="#cbd5e1" stroke-width="0.5"/>
+        <line x1="218" y1="18" x2="218" y2="62" stroke="#cbd5e1" stroke-width="0.5"/>
+        <line x1="353" y1="18" x2="353" y2="62" stroke="#cbd5e1" stroke-width="0.5"/>
+        <line x1="405" y1="18" x2="405" y2="62" stroke="#cbd5e1" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="legenda">
+      <div class="leg-item"><div class="leg-dot" style="background:#1a4b8c"></div>Radno vreme</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#22c55e"></div>Pauza (30 min)</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#94a3b8"></div>Odmor</div>
+    </div>
+    <div class="dane-label">Da li vozač postupa u skladu sa Zakonom?</div>
+    <div class="dane-btns" id="dane1">
+      <button class="dane-btn" onclick="checkDane(1,'da',true)">✅ DA</button>
+      <button class="dane-btn" onclick="checkDane(1,'ne',true)">❌ NE</button>
+    </div>
+    <div class="exp-full" id="exp1">
+      <strong>✅ Odgovor: DA — vozač postupa u skladu sa Zakonom</strong>
+      <ul>
+        <li>Radno vreme: 6h + 6h + 2h = <strong>14h</strong> (max 14h ✓)</li>
+        <li>Pauza od 30min na 10:00 — posle 6h rada ✓</li>
+        <li>Pauza od 30min na 16:30 — posle narednih 6h ✓</li>
+        <li>Dnevni odmor od 19:00 = <strong>9h skraćeni odmor</strong> ✓</li>
+        <li>Ukupno pauze: 30+30 = 60min ≥ 45min ✓</li>
+      </ul>
+    </div>
+
+    <!-- Zadatak 2 -->
+    <hr style="border:none;border-top:2px dashed #e5e7eb;margin:20px 0">
+    <div class="q-num">Zadatak 2 od 4</div>
+    <div class="q-text">Vozač je u toku 24 časa koristio radno vreme prikazano u dijagramu ispod. Da li postupa u skladu sa Zakonom?</div>
+    
+    <div class="diagram-wrap">
+      <div class="diagram-title">DIJAGRAM B — Period od 24 časa</div>
+      <svg viewBox="0 0 520 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;padding:10px">
+        <rect x="10" y="20" width="500" height="40" rx="4" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+        <!-- Odmor: 00:00-03:30 = 73px -->
+        <rect x="10" y="20" width="73" height="40" rx="4" fill="#94a3b8"/>
+        <text x="46" y="44" text-anchor="middle" font-size="9" fill="white" font-family="monospace" font-weight="bold">ODMOR</text>
+        <!-- Radno: 03:30-08:00 = 94px -->
+        <rect x="83" y="20" width="94" height="40" fill="#1a4b8c"/>
+        <text x="130" y="41" text-anchor="middle" font-size="9" fill="white" font-family="monospace" font-weight="bold">RADNO</text>
+        <text x="130" y="53" text-anchor="middle" font-size="8" fill="#93c5fd" font-family="monospace">4.5h</text>
+        <!-- Pauza: 08:00-08:30 = 10px -->
+        <rect x="177" y="20" width="10" height="40" fill="#22c55e"/>
+        <!-- Radno: 08:30-13:00 = 94px -->
+        <rect x="187" y="20" width="94" height="40" fill="#1a4b8c"/>
+        <text x="234" y="41" text-anchor="middle" font-size="9" fill="white" font-family="monospace" font-weight="bold">RADNO</text>
+        <text x="234" y="53" text-anchor="middle" font-size="8" fill="#93c5fd" font-family="monospace">4.5h</text>
+        <!-- Pauza: 13:00-13:30 = 10px -->
+        <rect x="281" y="20" width="10" height="40" fill="#22c55e"/>
+        <!-- Radno: 13:30-15:30 = 42px -->
+        <rect x="291" y="20" width="42" height="40" fill="#1a4b8c"/>
+        <text x="312" y="44" text-anchor="middle" font-size="9" fill="white" font-family="monospace">2h</text>
+        <!-- Odmor: 15:30 do kraja -->
+        <rect x="333" y="20" width="177" height="40" rx="0 4 4 0" fill="#c62828"/>
+        <text x="421" y="41" text-anchor="middle" font-size="9" fill="white" font-family="monospace" font-weight="bold">ODMOR</text>
+        <text x="421" y="53" text-anchor="middle" font-size="8" fill="#fca5a5" font-family="monospace">8.5h !</text>
+        <!-- Osa -->
+        <text x="10" y="75" font-size="8" fill="#64748b" font-family="monospace">00:00</text>
+        <text x="70" y="75" font-size="8" fill="#64748b" font-family="monospace">03:30</text>
+        <text x="177" y="75" font-size="8" fill="#64748b" font-family="monospace">08:00</text>
+        <text x="281" y="75" font-size="8" fill="#64748b" font-family="monospace">13:00</text>
+        <text x="333" y="75" font-size="8" fill="#64748b" font-family="monospace">15:30</text>
+        <text x="496" y="75" font-size="8" fill="#64748b" font-family="monospace">24:00</text>
+        <line x1="83" y1="18" x2="83" y2="62" stroke="#cbd5e1" stroke-width="0.5"/>
+        <line x1="177" y1="18" x2="177" y2="62" stroke="#cbd5e1" stroke-width="0.5"/>
+        <line x1="281" y1="18" x2="281" y2="62" stroke="#cbd5e1" stroke-width="0.5"/>
+        <line x1="333" y1="18" x2="333" y2="62" stroke="#cbd5e1" stroke-width="0.5"/>
+        <!-- Uzvičnik -->
+        <text x="400" y="15" font-size="14" fill="#c62828">⚠</text>
+      </svg>
+    </div>
+    <div class="legenda">
+      <div class="leg-item"><div class="leg-dot" style="background:#1a4b8c"></div>Radno vreme</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#22c55e"></div>Pauza</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#c62828"></div>Odmor — kraći od propisanog!</div>
+    </div>
+    <div class="dane-label">Da li vozač postupa u skladu sa Zakonom?</div>
+    <div class="dane-btns" id="dane2">
+      <button class="dane-btn" onclick="checkDane(2,'da',false)">✅ DA</button>
+      <button class="dane-btn" onclick="checkDane(2,'ne',false)">❌ NE</button>
+    </div>
+    <div class="exp-full" id="exp2">
+      <strong>❌ Odgovor: NE — vozač NIJE u skladu sa Zakonom</strong>
+      <ul>
+        <li>Odmor od 15:30 do 24:00 = <strong>8h 30min</strong></li>
+        <li>Minimum skraćeni dnevni odmor = <strong>9h</strong></li>
+        <li>Odmor je kraći za 30 minuta → <strong>PREKRŠAJ ✗</strong></li>
+        <li>Pauze su ispravne (30+30 min posle 4.5h upravljanja)</li>
+      </ul>
+    </div>
+
+    <!-- Zadatak 3 -->
+    <hr style="border:none;border-top:2px dashed #e5e7eb;margin:20px 0">
+    <div class="q-num">Zadatak 3 od 4</div>
+    <div class="q-text">Vozač je napravio prvu pauzu od 25 minuta posle 4h 30min upravljanja, a drugu pauzu od 20 minuta posle narednih 4h. Da li su pauze u skladu sa Zakonom?</div>
+    
+    <div class="diagram-wrap">
+      <div class="diagram-title">DIJAGRAM C — Pauze i upravljanje</div>
+      <svg viewBox="0 0 520 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;padding:10px">
+        <rect x="10" y="20" width="500" height="40" rx="4" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+        <!-- Upravljanje 4h30 = 188px -->
+        <rect x="10" y="20" width="188" height="40" rx="4" fill="#1565c0"/>
+        <text x="104" y="41" text-anchor="middle" font-size="9" fill="white" font-family="monospace" font-weight="bold">UPRAVLJANJE</text>
+        <text x="104" y="53" text-anchor="middle" font-size="8" fill="#93c5fd" font-family="monospace">4h 30min</text>
+        <!-- Pauza 25min = pogrešno -->
+        <rect x="198" y="20" width="17" height="40" fill="#f59e0b"/>
+        <text x="206" y="38" text-anchor="middle" font-size="7" fill="white" font-family="monospace" font-weight="bold">25</text>
+        <text x="206" y="48" text-anchor="middle" font-size="7" fill="white" font-family="monospace">min</text>
+        <!-- Upravljanje 4h = 167px -->
+        <rect x="215" y="20" width="167" height="40" fill="#1565c0"/>
+        <text x="298" y="41" text-anchor="middle" font-size="9" fill="white" font-family="monospace" font-weight="bold">UPRAVLJANJE</text>
+        <text x="298" y="53" text-anchor="middle" font-size="8" fill="#93c5fd" font-family="monospace">4h</text>
+        <!-- Pauza 20min = pogrešno -->
+        <rect x="382" y="20" width="13" height="40" fill="#f59e0b"/>
+        <text x="388" y="38" text-anchor="middle" font-size="7" fill="white" font-family="monospace" font-weight="bold">20</text>
+        <text x="388" y="48" text-anchor="middle" font-size="7" fill="white" font-family="monospace">min</text>
+        <!-- Ostatak -->
+        <rect x="395" y="20" width="115" height="40" rx="0 4 4 0" fill="#94a3b8"/>
+        <text x="453" y="44" text-anchor="middle" font-size="9" fill="white" font-family="monospace">...</text>
+        <!-- Uzvičnik -->
+        <text x="196" y="14" font-size="12" fill="#f59e0b">⚠</text>
+        <text x="380" y="14" font-size="12" fill="#f59e0b">⚠</text>
+        <!-- Osa -->
+        <text x="10" y="75" font-size="8" fill="#64748b" font-family="monospace">00:00</text>
+        <text x="185" y="75" font-size="8" fill="#64748b" font-family="monospace">04:30</text>
+        <text x="212" y="75" font-size="8" fill="#64748b" font-family="monospace">04:55</text>
+        <text x="379" y="75" font-size="8" fill="#64748b" font-family="monospace">08:55</text>
+      </svg>
+    </div>
+    <div class="legenda">
+      <div class="leg-item"><div class="leg-dot" style="background:#1565c0"></div>Upravljanje vozilom</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#f59e0b"></div>Pauza — nedovoljna!</div>
+    </div>
+    <div class="dane-label">Da li su pauze u skladu sa Zakonom?</div>
+    <div class="dane-btns" id="dane3">
+      <button class="dane-btn" onclick="checkDane(3,'da',false)">✅ DA</button>
+      <button class="dane-btn" onclick="checkDane(3,'ne',false)">❌ NE</button>
+    </div>
+    <div class="exp-full" id="exp3">
+      <strong>❌ Odgovor: NE — pauze NISU u skladu sa Zakonom</strong>
+      <ul>
+        <li>Propisana pauza = <strong>45 minuta</strong> posle 4h 30min upravljanja</li>
+        <li>Ili podeljena: prvi deo ≥ <strong>15 min</strong>, drugi deo ≥ <strong>30 min</strong></li>
+        <li>Vozač je napravio: 25 min + 20 min = 45 min ukupno</li>
+        <li>Ali drugi deo mora biti ≥ 30 min → 20 min <strong>nije dovoljno ✗</strong></li>
+        <li>Upravljanje se broji neprekidno: 4h30 + 25min pauza + 4h = <strong>PREKRŠAJ</strong></li>
+      </ul>
+    </div>
+
+    <!-- Zadatak 4 -->
+    <hr style="border:none;border-top:2px dashed #e5e7eb;margin:20px 0">
+    <div class="q-num">Zadatak 4 od 4</div>
+    <div class="q-text">Vozač je napravio prvu pauzu od 15 minuta posle 4h upravljanja, a drugu pauzu od 30 minuta posle narednih 4h 30min. Da li su pauze ispravne?</div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-title">DIJAGRAM D — Ispravna podeljena pauza</div>
+      <svg viewBox="0 0 520 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;padding:10px">
+        <rect x="10" y="20" width="500" height="40" rx="4" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+        <!-- Upravljanje 4h = 167px -->
+        <rect x="10" y="20" width="167" height="40" rx="4" fill="#1565c0"/>
+        <text x="93" y="41" text-anchor="middle" font-size="9" fill="white" font-family="monospace" font-weight="bold">UPRAVLJANJE</text>
+        <text x="93" y="53" text-anchor="middle" font-size="8" fill="#93c5fd" font-family="monospace">4h</text>
+        <!-- Pauza 15min = OK -->
+        <rect x="177" y="20" width="10" height="40" fill="#22c55e"/>
+        <text x="182" y="44" text-anchor="middle" font-size="7" fill="white" font-family="monospace">15</text>
+        <!-- Upravljanje 4h30 = 188px -->
+        <rect x="187" y="20" width="188" height="40" fill="#1565c0"/>
+        <text x="281" y="41" text-anchor="middle" font-size="9" fill="white" font-family="monospace" font-weight="bold">UPRAVLJANJE</text>
+        <text x="281" y="53" text-anchor="middle" font-size="8" fill="#93c5fd" font-family="monospace">4h 30min</text>
+        <!-- Pauza 30min = OK -->
+        <rect x="375" y="20" width="21" height="40" fill="#22c55e"/>
+        <text x="385" y="41" text-anchor="middle" font-size="8" fill="white" font-family="monospace" font-weight="bold">30</text>
+        <text x="385" y="52" text-anchor="middle" font-size="7" fill="white" font-family="monospace">min</text>
+        <!-- Ostatak -->
+        <rect x="396" y="20" width="114" height="40" rx="0 4 4 0" fill="#94a3b8"/>
+        <text x="453" y="44" text-anchor="middle" font-size="9" fill="white" font-family="monospace">...</text>
+        <!-- Osa -->
+        <text x="10" y="75" font-size="8" fill="#64748b" font-family="monospace">00:00</text>
+        <text x="170" y="75" font-size="8" fill="#64748b" font-family="monospace">04:00</text>
+        <text x="186" y="75" font-size="8" fill="#64748b" font-family="monospace">04:15</text>
+        <text x="373" y="75" font-size="8" fill="#64748b" font-family="monospace">08:45</text>
+        <text x="395" y="75" font-size="8" fill="#64748b" font-family="monospace">09:15</text>
+      </svg>
+    </div>
+    <div class="legenda">
+      <div class="leg-item"><div class="leg-dot" style="background:#1565c0"></div>Upravljanje vozilom</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#22c55e"></div>Pauza — ispravna</div>
+    </div>
+    <div class="dane-label">Da li su pauze u skladu sa Zakonom?</div>
+    <div class="dane-btns" id="dane4">
+      <button class="dane-btn" onclick="checkDane(4,'da',true)">✅ DA</button>
+      <button class="dane-btn" onclick="checkDane(4,'ne',true)">❌ NE</button>
+    </div>
+    <div class="exp-full" id="exp4">
+      <strong>✅ Odgovor: DA — pauze su ispravne</strong>
+      <ul>
+        <li>Prva pauza: <strong>15 min</strong> posle 4h upravljanja ✓ (min 15 min)</li>
+        <li>Druga pauza: <strong>30 min</strong> posle narednih 4h 30min ✓ (min 30 min)</li>
+        <li>Ukupno: 15 + 30 = <strong>45 min</strong> ✓</li>
+        <li>Redosled: prvo kraća pa duža ✓</li>
+        <li>Upravljanje između pauza: 4h30 min ≤ 4h30 min ✓</li>
+      </ul>
+    </div>
+    <button class="back-btn2" onclick="show('home-screen')" style="margin-top:16px">← Nazad na meni</button>
+  </div>
+</div>
+
+<!-- ===== S3: ČITANJE LISTIĆA ===== -->
+<div id="s3-screen" class="screen">
+  <div class="sec-header">
+    <button class="back-btn" onclick="show('home-screen')">←</button>
+    <div class="sec-title">🔵 ČITANJE TAHOGRAFSKOG LISTIĆA</div>
+  </div>
+  <div class="sec-body" id="s3-body">
+    <div class="q-num">Zadatak 1 od 3</div>
+    <div class="q-text">Na analognom tahografskom listiću prikazan je period od <strong>06:00 do 14:00 h</strong>. Očitajte ukupno trajanje svake aktivnosti:</div>
+
+    <!-- SVG analogni listić simulacija -->
+    <div class="diagram-wrap">
+      <div class="diagram-title">ANALOGNI TAHOGRAFSKI LISTIĆ — 06:00 do 14:00</div>
+      <svg viewBox="0 0 520 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#fffdf0;padding:8px">
+        <!-- Pozadina listića -->
+        <rect x="10" y="10" width="500" height="120" rx="6" fill="#fffdf0" stroke="#d4b896" stroke-width="1.5"/>
+        
+        <!-- Zona upravljanja (gornja) -->
+        <rect x="10" y="10" width="500" height="30" rx="6" fill="#fff9f0" stroke="none"/>
+        <text x="16" y="24" font-size="8" fill="#92400e" font-family="monospace" font-weight="bold">UPRAVLJANJE ⊙</text>
+        <!-- Upravljanje blokovi: 06:00-07:30, 08:30-11:00, 11:45-13:30 -->
+        <rect x="85" y="14" width="63" height="16" rx="2" fill="#1a4b8c" opacity="0.85"/>
+        <text x="116" y="25" text-anchor="middle" font-size="7" fill="white" font-family="monospace">1h30</text>
+        <rect x="190" y="14" width="104" height="16" rx="2" fill="#1a4b8c" opacity="0.85"/>
+        <text x="242" y="25" text-anchor="middle" font-size="7" fill="white" font-family="monospace">2h30</text>
+        <rect x="331" y="14" width="71" height="16" rx="2" fill="#1a4b8c" opacity="0.85"/>
+        <text x="366" y="25" text-anchor="middle" font-size="7" fill="white" font-family="monospace">1h45</text>
+
+        <!-- Zona ostalog rada (srednja) -->
+        <text x="16" y="52" font-size="8" fill="#78350f" font-family="monospace" font-weight="bold">OSTALI RAD ⚒</text>
+        <!-- Ostali rad: 07:30-08:00 -->
+        <rect x="148" y="36" width="21" height="16" rx="2" fill="#b45309" opacity="0.85"/>
+        <text x="158" y="47" text-anchor="middle" font-size="7" fill="white" font-family="monospace">30m</text>
+        <!-- 11:00-11:45 -->
+        <rect x="294" y="36" width="37" height="16" rx="2" fill="#b45309" opacity="0.85"/>
+        <text x="312" y="47" text-anchor="middle" font-size="7" fill="white" font-family="monospace">45m</text>
+
+        <!-- Zona raspoloživosti -->
+        <text x="16" y="77" font-size="8" fill="#1e40af" font-family="monospace" font-weight="bold">RASPOLOŽIVOST ◨</text>
+        <!-- Raspoloživost: 08:00-08:30 -->
+        <rect x="169" y="61" width="21" height="16" rx="2" fill="#3b82f6" opacity="0.85"/>
+        <text x="179" y="72" text-anchor="middle" font-size="7" fill="white" font-family="monospace">30m</text>
+
+        <!-- Zona pauze/odmora -->
+        <text x="16" y="102" font-size="8" fill="#166534" font-family="monospace" font-weight="bold">PAUZA/ODMOR ⊢</text>
+        <!-- Pauza: 13:30-14:00 -->
+        <rect x="402" y="86" width="21" height="16" rx="2" fill="#22c55e" opacity="0.85"/>
+        <text x="412" y="97" text-anchor="middle" font-size="7" fill="white" font-family="monospace">30m</text>
+
+        <!-- Vremenska osa -->
+        <line x1="10" y1="112" x2="510" y2="112" stroke="#d4b896" stroke-width="1"/>
+        <text x="10" y="125" font-size="8" fill="#92400e" font-family="monospace">06:00</text>
+        <text x="73" y="122" font-size="7" fill="#92400e" font-family="monospace">07</text>
+        <text x="135" y="122" font-size="7" fill="#92400e" font-family="monospace">08</text>
+        <text x="198" y="122" font-size="7" fill="#92400e" font-family="monospace">09</text>
+        <text x="261" y="122" font-size="7" fill="#92400e" font-family="monospace">10</text>
+        <text x="323" y="122" font-size="7" fill="#92400e" font-family="monospace">11</text>
+        <text x="385" y="122" font-size="7" fill="#92400e" font-family="monospace">12</text>
+        <text x="447" y="122" font-size="7" fill="#92400e" font-family="monospace">13</text>
+        <text x="487" y="125" font-size="8" fill="#92400e" font-family="monospace">14:00</text>
+        <!-- Vertikalne linije za sate -->
+        <line x1="84" y1="109" x2="84" y2="114" stroke="#d4b896" stroke-width="1"/>
+        <line x1="147" y1="109" x2="147" y2="114" stroke="#d4b896" stroke-width="1"/>
+        <line x1="210" y1="109" x2="210" y2="114" stroke="#d4b896" stroke-width="1"/>
+        <line x1="273" y1="109" x2="273" y2="114" stroke="#d4b896" stroke-width="1"/>
+        <line x1="336" y1="109" x2="336" y2="114" stroke="#d4b896" stroke-width="1"/>
+        <line x1="399" y1="109" x2="399" y2="114" stroke="#d4b896" stroke-width="1"/>
+        <line x1="462" y1="109" x2="462" y2="114" stroke="#d4b896" stroke-width="1"/>
+      </svg>
+    </div>
+
+    <div class="unos-grid">
+      <div class="unos-row">
+        <div class="unos-sym" style="background:#dbeafe;border-color:#93c5fd;color:#1e40af">⊙</div>
+        <div class="unos-lbl"><strong>Upravljanje vozilom</strong></div>
+        <input class="unos-input" id="l1i1" placeholder="SS:MM" maxlength="5">
+      </div>
+      <div class="unos-row">
+        <div class="unos-sym" style="background:#fef3c7;border-color:#fcd34d;color:#92400e">⚒</div>
+        <div class="unos-lbl"><strong>Ostali rad</strong></div>
+        <input class="unos-input" id="l1i2" placeholder="SS:MM" maxlength="5">
+      </div>
+      <div class="unos-row">
+        <div class="unos-sym" style="background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8">◨</div>
+        <div class="unos-lbl"><strong>Raspoloživost</strong></div>
+        <input class="unos-input" id="l1i3" placeholder="SS:MM" maxlength="5">
+      </div>
+      <div class="unos-row">
+        <div class="unos-sym" style="background:#f0fdf4;border-color:#bbf7d0;color:#166534">⊢</div>
+        <div class="unos-lbl"><strong>Pauza / Odmor</strong></div>
+        <input class="unos-input" id="l1i4" placeholder="SS:MM" maxlength="5">
+      </div>
+    </div>
+    <button class="check-btn" onclick="checkListic(1)">Proveri odgovore ✓</button>
+    <div class="result-banner" id="l1-result"></div>
+    <div class="exp-full" id="l1-exp">
+      <strong>Tačni odgovori (06:00–14:00):</strong><br><br>
+      ⊙ Upravljanje: <strong>05:45</strong> (1h30 + 2h30 + 1h45)<br>
+      ⚒ Ostali rad: <strong>01:15</strong> (30min + 45min)<br>
+      ◨ Raspoloživost: <strong>00:30</strong> (30min)<br>
+      ⊢ Pauza/odmor: <strong>00:30</strong> (30min)<br><br>
+      <em>Ukupno: 5:45 + 1:15 + 0:30 + 0:30 = <strong>08:00 h ✓</strong></em>
+    </div>
+
+    <!-- Zadatak 2 -->
+    <hr style="border:none;border-top:2px dashed #e5e7eb;margin:20px 0">
+    <div class="q-num">Zadatak 2 od 3 — Kratka analiza</div>
+    <div class="q-text">Na osnovu prethodnog listića (06:00–14:00), da li je vozač ispoštovao propisanu pauzu od 45 minuta?</div>
+    <div class="dane-label">Da li je pauza ispoštovana?</div>
+    <div class="dane-btns" id="dane5">
+      <button class="dane-btn" onclick="checkDane(5,'da',false)">✅ DA</button>
+      <button class="dane-btn" onclick="checkDane(5,'ne',false)">❌ NE</button>
+    </div>
+    <div class="exp-full" id="exp5">
+      <strong>❌ NE — pauza od 30 minuta nije dovoljna</strong>
+      <ul>
+        <li>Vozač je upravljao 5h 45min ukupno</li>
+        <li>Između 06:00 i 13:30 nema pauze od 45 min</li>
+        <li>Pauza od 30min tek na 13:30 — prekasno ✗</li>
+        <li>Propis: pauza ≥ 45 min posle max 4h 30min upravljanja</li>
+      </ul>
+    </div>
+
+    <!-- Zadatak 3 -->
+    <hr style="border:none;border-top:2px dashed #e5e7eb;margin:20px 0">
+    <div class="q-num">Zadatak 3 od 3 — Upiši aktivnosti</div>
+    <div class="q-text">Vozač je u periodu od <strong>08:00 do 10:00 h</strong> imao sledeće aktivnosti: upravljao 1h 18min, ostali rad 15min, raspoloživost 0min, pauza 27min. Upišite vrednosti:</div>
+    <div class="unos-grid">
+      <div class="unos-row">
+        <div class="unos-sym" style="background:#dbeafe;border-color:#93c5fd;color:#1e40af">⊙</div>
+        <div class="unos-lbl"><strong>Upravljanje</strong></div>
+        <input class="unos-input" id="l3i1" placeholder="SS:MM" maxlength="5">
+      </div>
+      <div class="unos-row">
+        <div class="unos-sym" style="background:#fef3c7;border-color:#fcd34d;color:#92400e">⚒</div>
+        <div class="unos-lbl"><strong>Ostali rad</strong></div>
+        <input class="unos-input" id="l3i2" placeholder="SS:MM" maxlength="5">
+      </div>
+      <div class="unos-row">
+        <div class="unos-sym" style="background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8">◨</div>
+        <div class="unos-lbl"><strong>Raspoloživost</strong></div>
+        <input class="unos-input" id="l3i3" placeholder="SS:MM" maxlength="5">
+      </div>
+      <div class="unos-row">
+        <div class="unos-sym" style="background:#f0fdf4;border-color:#bbf7d0;color:#166534">⊢</div>
+        <div class="unos-lbl"><strong>Pauza / Odmor</strong></div>
+        <input class="unos-input" id="l3i4" placeholder="SS:MM" maxlength="5">
+      </div>
+    </div>
+    <button class="check-btn" onclick="checkListic(3)">Proveri odgovore ✓</button>
+    <div class="result-banner" id="l3-result"></div>
+    <div class="exp-full" id="l3-exp">
+      <strong>Tačni odgovori (08:00–10:00):</strong><br><br>
+      ⊙ Upravljanje: <strong>01:18</strong><br>
+      ⚒ Ostali rad: <strong>00:15</strong><br>
+      ◨ Raspoloživost: <strong>00:00</strong><br>
+      ⊢ Pauza/odmor: <strong>00:27</strong><br><br>
+      <em>Ukupno: 1:18 + 0:15 + 0:00 + 0:27 = <strong>02:00 h ✓</strong></em>
+    </div>
+    <button class="back-btn2" onclick="show('home-screen')" style="margin-top:16px">← Nazad na meni</button>
+  </div>
+</div>
+
+<!-- ===== S4: DIGITALNI ISPISI ===== -->
+<div id="s4-screen" class="screen">
+  <div class="sec-header">
+    <button class="back-btn" onclick="show('home-screen')">←</button>
+    <div class="sec-title">🖨 DIGITALNI TAHOGRAF — ISPISI</div>
+  </div>
+  <div class="sec-body">
+    <div class="q-text" style="margin-bottom:16px">Prepoznajte vrstu ispisa digitalnog tahografa i navedite šta prikazuje:</div>
+
+    <div id="ispisi-list"></div>
+    <button class="back-btn2" onclick="show('home-screen')" style="margin-top:8px">← Nazad na meni</button>
+  </div>
+</div>
+
+<!-- ===== S5: OBRAČUN RADNOG VREMENA ===== -->
+<div id="s5-screen" class="screen">
+  <div class="sec-header">
+    <button class="back-btn" onclick="show('home-screen')">←</button>
+    <div class="sec-title">🧮 OBRAČUN RADNOG VREMENA</div>
+  </div>
+  <div class="sec-body" id="s5-body"></div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+// ===== AUTH =====
+const PASS='RELI0626P';
+const EXP=new Date('2026-07-01');
+
+window.addEventListener('DOMContentLoaded',function(){
+  if(new Date()>=EXP){
+    document.getElementById('main-login').style.display='none';
+    document.getElementById('locked-wrap').style.display='flex';
+  }
+  document.getElementById('pw-input').addEventListener('keydown',function(e){if(e.key==='Enter')tryLogin();});
+  buildS1();
+  buildS5();
+  buildIspisi();
+});
+
+function tryLogin(){
+  const v=document.getElementById('pw-input').value.trim().toUpperCase();
+  if(v===PASS){show('home-screen');}
+  else{
+    const err=document.getElementById('pw-err');
+    err.classList.add('show');
+    document.getElementById('pw-input').value='';
+    setTimeout(()=>err.classList.remove('show'),3500);
+  }
+}
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function showSec(id){show(id+'-screen');}
+
+// ===== DA/NE =====
+const daneAnswered={};
+function checkDane(num,chosen,correctIsDa){
+  if(daneAnswered[num])return;
+  daneAnswered[num]=true;
+  const correct=correctIsDa?'da':'ne';
+  const wrap=document.getElementById('dane'+num);
+  const exp=document.getElementById('exp'+num);
+  const btns=wrap.querySelectorAll('.dane-btn');
+  btns.forEach(b=>b.disabled=true);
+  if(chosen===correct){
+    btns[chosen==='da'?0:1].classList.add(chosen==='da'?'da-ok':'ne-ok');
+  }else{
+    btns[chosen==='da'?0:1].classList.add('wrong-sel');
+    btns[correct==='da'?0:1].classList.add(correct==='da'?'da-ok':'ne-ok');
+  }
+  exp.style.display='block';
+}
+
+// ===== LISTIĆ =====
+const listicAns={
+  1:{l1i1:'05:45',l1i2:'01:15',l1i3:'00:30',l1i4:'00:30'},
+  3:{l3i1:'01:18',l3i2:'00:15',l3i3:'00:00',l3i4:'00:27'}
+};
+function checkListic(num){
+  const ans=listicAns[num];
+  let ok=0,total=Object.keys(ans).length;
+  Object.entries(ans).forEach(([id,val])=>{
+    const el=document.getElementById(id);
+    const v=el.value.trim().replace(/[.,]/g,':');
+    el.classList.remove('ok','err');
+    if(v===val){el.classList.add('ok');ok++;}
+    else el.classList.add('err');
+  });
+  const banner=document.getElementById('l'+num+'-result');
+  const exp=document.getElementById('l'+num+'-exp');
+  banner.style.display='block';
+  exp.style.display='block';
+  if(ok===total){
+    banner.className='result-banner ok';
+    banner.textContent='✅ Sve tačno! Odlično si očitao/la listić.';
+  }else{
+    banner.className='result-banner err';
+    banner.textContent=`❌ ${ok}/${total} tačnih. Pogledaj tačne odgovore ispod.`;
+  }
+}
+
+// ===== ISPISI =====
+const ispisList=[
+  {sym:'24h\u{1F534}T',label:'Dnevni ispis vozača',opis:'Prikazuje sve aktivnosti vozača u toku jednog dana (24h) — upravljanje, pauze, ostali rad, odmor. Najčešće se zahteva pri kontroli.',color:'#1a4b8c'},
+  {sym:'!×AT',label:'Ispis događaja i grešaka',opis:'Prikazuje prekršaje, prekoračenja i greške sistema — prekoračenje vremena upravljanja, nedostajuće pauze, manipulacije uređajem.',color:'#c62828'},
+  {sym:'≫T',label:'Ispis upravljanja',opis:'Prikazuje samo vreme upravljanja vozilom i pređeni put u odabranom vremenskom periodu.',color:'#1b5e20'},
+  {sym:'T\u{26D4}T',label:'Tehnički ispis vozila',opis:'Tehnički podaci o vozilu — podaci o kalibraciji, identifikacione informacije o uređaju, istorija podešavanja.',color:'#6b21a8'},
+];
+function buildIspisi(){
+  const wrap=document.getElementById('ispisi-list');
+  wrap.innerHTML=ispisList.map((item,i)=>`
+    <div style="border:2px solid #e5e7eb;border-radius:10px;padding:14px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start">
+      <div style="width:52px;height:52px;background:${item.color};border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;font-family:monospace;flex-shrink:0;text-align:center;line-height:1.2">${item.sym}</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#0d1117;margin-bottom:4px">${item.label}</div>
+        <div style="font-size:12px;color:#6b7280;line-height:1.5">${item.opis}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== S1: TEORIJA =====
+const s1q=[
+  {q:'Koliko vrsta tahografskih kartica postoji?',o:['Dve (vozačka i servisna)','Tri (vozačka, preduzeća i radionice)','Četiri (vozačka, preduzeća, radionice i kontrolna)','Pet'],c:2,e:'Postoje 4 vrste: kartica vozača, kartica preduzeća, kartica radionice i kontrolna kartica.'},
+  {q:'Rok važenja kartice vozača za digitalni tahograf je:',o:['1 godina','2 godine','5 godina','10 godina'],c:2,e:'Kartica vozača izdaje se sa rokom važenja od 5 godina.'},
+  {q:'Sa kojim vremenom mora biti usklađen sat na digitalnom tahografu?',o:['Lokalnim vremenom','UTC — koordinisano univerzalno vreme','Srednjeevropskim vremenom','Vremenom države registracije vozila'],c:1,e:'Sat na digitalnom tahografu mora biti podešen na UTC (Coordinated Universal Time).'},
+  {q:'Koje vreme vozač može podešavati na digitalnom tahografu?',o:['UTC vreme','Lokalno vreme','Srednjeevropsko vreme','Nijedano od navedenog'],c:1,e:'Vozač može podešavati lokalno vreme na tahografu, dok UTC podešava ovlašćena radionica.'},
+  {q:'Ko izdaje kartice vozača za digitalni tahograf u Srbiji?',o:['Agencija za bezbednost saobraćaja','Ministarstvo saobraćaja','Ministarstvo unutrašnjih poslova (MUP)','AMSS'],c:2,e:'Kartice vozača za digitalni tahograf u Srbiji izdaje MUP.'},
+  {q:'Koji je rok za preuzimanje podataka sa kartice vozača?',o:['14 dana','21 dan','28 dana','30 dana'],c:2,e:'Prevoznik je dužan da preuzima podatke sa kartice vozača najmanje svakih 28 dana.'},
+  {q:'Da li vozilom sa digitalnim tahografom sme da se upravlja bez kartice vozača?',o:['Ne sme nikad','Sme, ako odobri prevoznik','Ne sme, osim ako je kartica izgubljena, ukradena ili oštećena','Sme uvek, kartica nije obavezna'],c:2,e:'Vozilom se sme upravljati bez kartice samo izuzetno — ako je kartica izgubljena, ukradena ili oštećena.'},
+  {q:'Gornja granica mernog opsega brzine na tahografskom listiću iznosi:',o:['80 km/h','100 km/h','120 ili 125 km/h','150 km/h'],c:2,e:'Gornja granica mernog opsega brzine na tahografskom listiću iznosi 120 ili 125 km/h.'},
+  {q:'Da li digitalni tahograf beleži podatke kada je na režimu OUTOFSCOPE?',o:['Ne beleži i ne prikazuje kao prekršaj','Beleži, ali se ne prikazuje kao prekršaj pri analizi','Ne beleži, ali prikazuje kao prekršaj','Beleži i obavezno evidentira kao prekršaj'],c:1,e:'Na OUTOFSCOPE režimu tahograf beleži aktivnosti, ali se ne prikazuju kao prekršaj pri analizi podataka.'},
+  {q:'Šta je tahograf?',o:['Merna jedinica za pređene kilometre','Uređaj za merenje prosečne brzine','Kontrolna merna jedinica koja beleži aktivnosti vozača','GPS uređaj za praćenje vozila'],c:2,e:'Tahograf je kontrolna merna jedinica koja automatski beleži: brzinu, vreme upravljanja, pauze i pređeni put.'},
+  {q:'Koliko najduže sme da traje upravljanje vozilom bez pauze?',o:['3 sata','4 sata','4 sata i 30 minuta','5 sati'],c:2,e:'Vozač mora napraviti pauzu posle najduže 4 sata i 30 minuta neprekidnog upravljanja.'},
+  {q:'Ako vozač nakon 4h 30min upravljanja napravi pauzu od 15 minuta, koliko još mora trajati pauza?',o:['15 minuta','30 minuta','45 minuta','Pauza je završena'],c:1,e:'Pauza se deli: prvi deo min 15 min, drugi deo min 30 min. Posle 15 min, mora se odmoriti još min 30 min.'},
+];
+
+// ===== S5: OBRAČUN =====
+const s5q=[
+  {q:'Vozač je u toku nedelje upravljao vozilom ukupno 58 sati. Da li je u skladu sa propisima?',o:['Da — nije prekoračeno 60 sati','Da — nije prekoračeno 90 sati','Ne — nedeljno upravljanje ne sme biti duže od 56 sati','Ne — nedeljno upravljanje ne sme biti duže od 48 sati'],c:2,e:'Maksimalno nedeljno upravljanje je 56 sati. Vozač je upravljao 58h — prekršaj za 2 sata.'},
+  {q:'U 3. nedelji vozač je upravljao 38h, a u 4. nedelji 56h. Da li postoji prekršaj dvonedeljnog upravljanja?',o:['Ne — ni jedna nedelja ne prelazi 56h','Ne — zbir je 94h, dozvoljeno je do 96h','Da — zbir dve nedelje je 94h, maksimum je 90h','Da — 4. nedelja prelazi 50h'],c:2,e:'Zbir 38+56=94h prekoračuje dozvoljenih 90h u dve uzastopne nedelje. Prekršaj za 4 sata.'},
+  {q:'Vozač je radio od 06:00 do 22:00 sa noćnim radom (00:00-04:00 prethodne noći). Koliko traje radno vreme?',o:['14 sati — u skladu sa propisima','16 sati — prekoračenje od 2h','12 sati — u skladu sa propisima','10 sati — u skladu sa propisima'],c:1,e:'Ako je vozač radio 16 sati, prekoračuje maksimalnih 14h dnevnog radnog vremena. Sa noćnim radom max je 10h.'},
+  {q:'Vozač koristi skraćeni nedeljni odmor od 24 sata u 2. nedelji. Do kada mora nadoknaditi razliku?',o:['Do kraja iste nedelje','Do kraja 2. naredne nedelje','Do kraja 3. naredne nedelje','Do kraja meseca'],c:2,e:'Nadoknada za skraćeni nedeljni odmor (razlika do 45h) mora biti data do kraja 3. naredne nedelje.'},
+  {q:'Vozač ima ukupno radno vreme od 68 sati u jednoj nedelji. Da li je u prekršaju?',o:['Nije — max je 70h nedeljno','Nije — koristio je nedeljni odmor','Jeste — max nedeljno radno vreme je 60h','Jeste — max je 56h nedeljno'],c:2,e:'Maksimalno nedeljno radno vreme (uključujući prekovremeni) je 60 sati. Vozač je u prekršaju za 8 sati.'},
+];
+
+let s1idx=0,s1score=0;
+let s5idx=0,s5score=0;
+
+function buildQuiz(questions,idx,bodyId,prefix){
+  const q=questions[idx];
+  const isLast=idx===questions.length-1;
+  const pct=Math.round((idx/questions.length)*100);
+  let html=`
+    <div class="q-num">Pitanje ${idx+1} od ${questions.length}</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="q-text">${q.q}</div>
+    <div id="${prefix}-opts">`;
+  q.o.forEach((o,i)=>{
+    html+=`<button class="opt" id="${prefix}-o${i}" onclick="ansQ('${prefix}',${i},${q.c},'${bodyId}')">${o}</button>`;
+  });
+  html+=`</div>
+    <div class="exp-box" id="${prefix}-exp">${q.e||''}</div>
+    <button class="next-btn" id="${prefix}-next" onclick="nextQ('${prefix}','${bodyId}')">
+      ${isLast?'📊 Vidi rezultat':'Sledeće pitanje →'}
+    </button>`;
+  document.getElementById(bodyId).innerHTML=html;
+}
+
+function ansQ(prefix,chosen,correct,bodyId){
+  document.querySelectorAll(`#${prefix}-opts .opt`).forEach(b=>b.disabled=true);
+  document.getElementById(`${prefix}-o${chosen}`).classList.add(chosen===correct?'correct':'wrong');
+  if(chosen!==correct)document.getElementById(`${prefix}-o${correct}`).classList.add('reveal');
+  if(chosen===correct){if(prefix==='s1')s1score++;else s5score++;}
+  document.getElementById(`${prefix}-exp`).style.display='block';
+  document.getElementById(`${prefix}-next`).classList.add('show');
+}
+
+function nextQ(prefix,bodyId){
+  const qs=prefix==='s1'?s1q:s5q;
+  if(prefix==='s1')s1idx++;else s5idx++;
+  const idx=prefix==='s1'?s1idx:s5idx;
+  if(idx>=qs.length){showScore(prefix,bodyId,qs.length);return;}
+  buildQuiz(qs,idx,bodyId,prefix);
+}
+
+function showScore(prefix,bodyId,total){
+  const score=prefix==='s1'?s1score:s5score;
+  const pct=Math.round((score/total)*100);
+  const pass=pct>=75;
+  document.getElementById(bodyId).innerHTML=`
+    <div class="score-wrap">
+      <div class="score-emoji">${pass?'🎉':'📚'}</div>
+      <div class="score-pct ${pass?'pass':'fail'}">${pct}%</div>
+      <div class="score-sub">${score}/${total} tačnih · ${pass?'Položio/la':'Nije položio/la'}</div>
+      <button class="restart-btn" onclick="resetQ('${prefix}','${bodyId}')">🔄 Ponovi</button>
+      <button class="back-btn2" onclick="show('home-screen')">← Nazad na meni</button>
+    </div>`;
+}
+
+function resetQ(prefix,bodyId){
+  if(prefix==='s1'){s1idx=0;s1score=0;buildQuiz(s1q,0,bodyId,'s1');}
+  else{s5idx=0;s5score=0;buildQuiz(s5q,0,bodyId,'s5');}
+}
+
+function buildS1(){buildQuiz(s1q,0,'s1-body','s1');}
+function buildS5(){buildQuiz(s5q,0,'s5-body','s5');}
+</script>
+</body>
+</html>
